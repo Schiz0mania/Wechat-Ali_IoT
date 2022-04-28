@@ -1,1 +1,21 @@
 /**index.wxss**/
+
+.connect-info {
+  display: flex;
+  flex-direction: row;
+  margin-top: 1rpx;
+  height: 60rpx;
+ }
+
+ .background-white {
+  background-color: rgb(255, 255, 255);
+ }
+
+ .button-container {
+  margin-top: 0px;
+  border: 1px solid #aaa;
+  width: 140rpx;
+  height: 60rpx;
+  border-radius: 5px;
+  text-align: center;
+ }
