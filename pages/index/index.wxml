@@ -1,9 +1,10 @@
 <!--index.wxml-->
 <view class="container">
 <view>
-     <text>湿度：</text><text>{{humidity}}</text><text>% <br/></text>
-    
-     <text>温度：</text><text>{{temperature}}</text><text>℃</text>
+     <text>湿度：</text><text>{{Humidity}}</text><text>% <br/></text>
+     <text>温度：</text><text>{{Temperature}}</text><text>℃</text>
+     <text>光照强度：</text><text>{{Env_lux}}</text><text>Lux</text>
+
 </view>
   <view  class="button-container" bindtap='online' >
     设备上线

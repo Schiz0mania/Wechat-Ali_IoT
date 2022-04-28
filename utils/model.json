@@ -1,0 +1,80 @@
+{
+  "properties": [
+    {
+      "identifier": "CO2",
+      "dataType": {
+        "type": "int"
+      }
+    },
+    {
+      "identifier": "PM25",
+      "dataType": {
+        "type": "int"
+      }
+    },
+    {
+      "identifier": "PM10",
+      "dataType": {
+        "type": "int"
+      }
+    },
+    {
+      "identifier": "HCHO",
+      "dataType": {
+        "type": "double"
+      }
+    },
+    {
+      "identifier": "Tvoc",
+      "dataType": {
+        "type": "double"
+      }
+    },
+    {
+      "identifier": "Temperature",
+      "dataType": {
+        "type": "float"
+      }
+    },
+    {
+      "identifier": "Battery",
+      "dataType": {
+        "type": "int"
+      }
+    },
+    {
+      "identifier": "Env_lux",
+      "dataType": {
+        "type": "double"
+      }
+    },
+    {
+      "identifier": "Humidity",
+      "dataType": {
+        "type": "float"
+      }
+    }
+  ],
+  "events": [
+    {
+      "outputData": [
+        {
+          "identifier": "eventValue",
+          "dataType": {
+            "type": "bool"
+          }
+        }
+      ],
+      "identifier": "Offline_alarm",
+      "type": "info"
+    },
+    {
+      "identifier": "CO2_alarm",
+      "type": "alert"
+    },
+    {
+      "identifier": "PM25_alarm",
+      "type": "alert"
+    }
+  ]
+}
