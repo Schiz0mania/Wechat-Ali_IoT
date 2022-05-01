@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@alicloud/iot20180120": "^3.0.2",
+    "@alicloud/openapi-client": "^0.4.1"
+  }
+}
