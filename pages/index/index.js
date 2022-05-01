@@ -17,7 +17,10 @@ Page({ // 页面初始化
   data: {
     Temperature: '0',
     Humidity: '0',
-
+    Env_lux: '0',
+    PM25: '0',
+    CO2: '0',
+    Buzzer: '0',
     deviceLog: '',
     deviceState: ''
  },
@@ -40,13 +43,17 @@ Page({ // 页面初始化
      wx.showToast({
        title: 'Connect Success!',
      })
-     //订阅，获取云端数据的topic
 
+     //订阅，获取云端数据的topic
      client.subscribe(`/sys/a1wTI7EqUpu/${deviceConfig.deviceName}/thing/service/property/set`,function(err){
       if(! err){
         console.log("sub succeed!");
       }
-      
+     })
+     client.unsubscribe(`/sys/a1wTI7EqUpu/${deviceConfig.deviceName}/thing/service/property/get`,function(err){
+      if(! err){
+        console.log("sub2 succeed!");
+      }
      })
      //接收消息监听
     client.on('message', function (topic, message) {
@@ -56,25 +63,34 @@ Page({ // 页面初始化
 
       /*
       下行格式
-      {"method":"thing.service.property.set",
-      "id":"305516842",
-      "params":{"CurrentHumidity":12,"CurrentTemperature":23,"Buzzer":0},
-      "version":"1.0.0"}
+     {"method":"thing.service.property.set",
+     "id":"228046399",
+     "params":{
+       "mlux":11712,
+       "CurrentHumidity":69,
+       "PM25":37,
+       "CurrentTemperature":36,
+       "CO2":1053,
+       "Buzzer":1},
+       "version":"1.0.0"}
       */
       var obj= JSON.parse(message);
       that.setData({
         Humidity: obj.params.CurrentHumidity,
-        Temperature: obj.params.CurrentTemperature
+        Temperature: obj.params.CurrentTemperature,
+        Env_lux: obj.params.mlux,
+        PM25:obj.params.PM25,
+        CO2:obj.params.CO2,
+        Buzzer:obj.params.Buzzer
       })
       
     })
    })
 
  },
- //发送数据给云端
+ //发送数据给云端，同时也需要用该数据包初始化app
  send:function(){
    const topic=`/sys/a1wTI7EqUpu/${deviceConfig.deviceName}/thing/event/property/post`;
-
   client.publish(topic,this.getPostData(topic),{qos:1})
 
 
@@ -94,13 +110,20 @@ Page({ // 页面初始化
 },
 // 生成上传的设备属性
   getPostData(topic){
+    
     const payloadJson = {
+
+      method: topic,
       id: Date.now(),
       params: {
-        CurrentTemperature: Math.floor((Math.random() * 20) + 10),
-        CurrentHumidity: Math.floor((Math.random() * 20) + 60),
-      },
-      method: "thing.event.property.post"
+        // Math.round(Math.random()*(y-x)+x)
+        CurrentTemperature: Math.floor(Math.random() * (40-10) + 10), // -40 ~ 123
+        CurrentHumidity: Math.floor((Math.random() * (80-20)) + 20), // 0 ~ 100
+        CO2:Math.floor(Math.random()*(6000)+0) , // 0 ~ 6000 ppm
+        Buzzer: Math.round(Math.random()), // 0 1
+        mlux: Math.round(Math.random()*(30000-500)+500), // 0 ~ 0 ~ 65000
+        PM25: Math.round(Math.random()*(100-80)+20) //0 ~ 400
+      }
   }
 
   console.log("===postData\n topic=" + topic)

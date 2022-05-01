@@ -14,8 +14,8 @@
  .button-container {
   margin-top: 0px;
   border: 1px solid #aaa;
-  width: 140rpx;
-  height: 60rpx;
+  width: 280rpx;
+  height: 120rpx;
   border-radius: 5px;
   text-align: center;
  }

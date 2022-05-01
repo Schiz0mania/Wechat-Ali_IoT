@@ -1,7 +1,25 @@
 {
   "properties": [
     {
-      "identifier": "CO2",
+      "identifier": "CurrentHumidity",
+      "dataType": {
+        "type": "double"
+      }
+    },
+    {
+      "identifier": "Buzzer",
+      "dataType": {
+        "type": "bool"
+      }
+    },
+    {
+      "identifier": "co2",
+      "dataType": {
+        "type": "int"
+      }
+    },
+    {
+      "identifier": "mlux",
       "dataType": {
         "type": "int"
       }
@@ -9,72 +27,14 @@
     {
       "identifier": "PM25",
       "dataType": {
-        "type": "int"
-      }
-    },
-    {
-      "identifier": "PM10",
-      "dataType": {
-        "type": "int"
-      }
-    },
-    {
-      "identifier": "HCHO",
-      "dataType": {
-        "type": "double"
-      }
-    },
-    {
-      "identifier": "Tvoc",
-      "dataType": {
-        "type": "double"
-      }
-    },
-    {
-      "identifier": "Temperature",
-      "dataType": {
         "type": "float"
       }
     },
     {
-      "identifier": "Battery",
-      "dataType": {
-        "type": "int"
-      }
-    },
-    {
-      "identifier": "Env_lux",
+      "identifier": "CurrentTemperature",
       "dataType": {
         "type": "double"
       }
-    },
-    {
-      "identifier": "Humidity",
-      "dataType": {
-        "type": "float"
-      }
-    }
-  ],
-  "events": [
-    {
-      "outputData": [
-        {
-          "identifier": "eventValue",
-          "dataType": {
-            "type": "bool"
-          }
-        }
-      ],
-      "identifier": "Offline_alarm",
-      "type": "info"
-    },
-    {
-      "identifier": "CO2_alarm",
-      "type": "alert"
-    },
-    {
-      "identifier": "PM25_alarm",
-      "type": "alert"
     }
   ]
 }
