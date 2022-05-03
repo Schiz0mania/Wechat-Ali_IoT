@@ -27,7 +27,9 @@ Page({ // 页面初始化
   // 设备上线 按钮点击事件
   online: function (e) {
     this.doConnect()
+    this.PubData();
  },
+ // 上线并更新数据
   doConnect() {
     device=iot.device(deviceConfig)
   
@@ -43,12 +45,12 @@ Page({ // 页面初始化
       title: 'Connect!',
       })
     });
-    
+
+
        //消息监听
     device.on('message', (topic, payload) => {
         var obj= JSON.parse(payload);
         console.log('==received:\n',topic, payload.toString());
-        
      /*
       下行格式
      {"method":"thing.service.property.set",
@@ -62,37 +64,42 @@ Page({ // 页面初始化
        "Buzzer":1},
        "version":"1.0.0"}
       */
-      
+     // 云端set事件并处理数据更新
         if(payload.indexOf('set') > 0 ){
-            this.setData({
-              Humidity: obj.params.CurrentHumidity,
-              Temperature: obj.params.CurrentTemperature,
-              Env_lux: obj.params.mlux,
-              PM25:obj.params.PM25,
-              CO2:obj.params.CO2,
-              Buzzer:obj.params.Buzzer
-          })
-    
-    
+          this.refresh(obj.params);
+          this.check(obj.params);
+        }
+    // 云端报警事件处理
+        if(payload.indexOf('PM25_alarm') > 0 && payload.indexOf('success') > 0){
+            //this.refresh(obj.params);
+            wx.showModal({
+              title: '提示',
+              content: '当前环境PM2.5浓度过高，请注意！',
+              success: function (res) {
+                if (res.confirm) {//这里是点击了确定以后
+                  console.log('用户点击确定')
+                } else {//这里是点击了取消以后
+                  console.log('用户点击取消')
+                }
+              }
+            })
+  
         }
     });   
-
   
-
-      
-     
  },
  //发送数据给云端
  send:function(){
-   const topic=`/sys/a1wTI7EqUpu/${deviceConfig.deviceName}/thing/event/property/post`;
-   device.publish(topic, this.getPostData(topic));
+   this.PubData();
  },
  // 设备下线 按钮点击事件
  offline: function () {
+   // 记得清除数据显示
   device.end()
    console.log('disconnect successfully!');
    let dateTime = util.formatTime(new Date());
    this.setData({
+
    deviceState: dateTime + ' Disconnect!'
    })
     wx.showToast({
@@ -101,7 +108,32 @@ Page({ // 页面初始化
 
 },
 
-// 生成上传的设备属性
+// publish method:post
+  PubData(){
+  const topic=`/sys/a1wTI7EqUpu/${deviceConfig.deviceName}/thing/event/property/post`;
+  device.publish(topic, this.getPostData(topic));
+},
+  PubEvent(){
+    const topic=`/sys/a1wTI7EqUpu/${deviceConfig.deviceName}/thing/event/PM25_alarm/post`;
+    device.publish(topic, this.getPostEventData(topic));
+  },
+
+// 生成上传的事件参数
+  getPostEventData(topic){
+    const payloadJson = {
+      method: topic,
+      id: Date.now(),
+      params: {
+        Buzzer: 1,
+        PM25: this.data.PM25
+      }
+  }
+  console.log("===postData\n topic=" + topic);
+  console.log(payloadJson);
+  this.refresh(payloadJson.params);
+  return JSON.stringify(payloadJson);
+  },
+  // 生成上传的设备属性
   getPostData(topic){
     const payloadJson = {
       method: topic,
@@ -111,13 +143,59 @@ Page({ // 页面初始化
         CurrentTemperature: Math.floor(Math.random() * (40-10) + 10), // -40 ~ 123
         CurrentHumidity: Math.floor((Math.random() * (80-20)) + 20), // 0 ~ 100
         CO2:Math.floor(Math.random()*(6000)+0) , // 0 ~ 6000 ppm
-        Buzzer: Math.round(Math.random()), // 0 1
+        Buzzer: 0, // 
         mlux: Math.round(Math.random()*(30000-500)+500), // 0 ~ 0 ~ 65000
         PM25: Math.round(Math.random()*(100-80)+20) //0 ~ 400
       }
   }
   console.log("===postData\n topic=" + topic)
   console.log(payloadJson)
+  this.refresh(payloadJson.params);
   return JSON.stringify(payloadJson);
+  },
+
+  //页面刷新
+  refresh(params){
+    var str=JSON.stringify(params);
+    var CurrentHumidity,CurrentTemperature,mlux,PM25,CO2,Buzzer;
+    // 判断数据包内容
+    if(str.indexOf('CurrentHumidity') > 0 ){
+       CurrentHumidity=params.CurrentHumidity;
+    }
+    if(str.indexOf('CurrentTemperature') > 0 ){
+       CurrentTemperature=params.CurrentTemperature;
+    }
+    if(str.indexOf('mlux') > 0 ){
+       mlux=params.mlux;
+    }
+    if(str.indexOf('PM25') > 0 ){
+       PM25=params.PM25;
+    }
+    if(str.indexOf('CO2') > 0 ){
+       CO2=params.CO2;
+    }
+    if(str.indexOf('Buzzer') > 0 ){
+       Buzzer=params.Buzzer;
+    }
+    // 根据数据包内容修改页面
+    this.setData({
+      Humidity: CurrentHumidity,
+      Temperature: CurrentTemperature,
+      Env_lux: mlux,
+      PM25: PM25,
+      CO2: CO2,
+      Buzzer: Buzzer
+  })
+  },
+  //检查数据，是否超过警戒值
+  check(params){
+    var str=JSON.stringify(params)
+    if(str.indexOf('PM25') > 0 ){
+      if(params.PM25>200){
+        this.PubEvent();
+      }
+    }
+
+
   }
 })
