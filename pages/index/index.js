@@ -71,14 +71,13 @@ Page({ // 页面初始化
         }
     // 云端报警事件处理
         if(payload.indexOf('PM25_alarm') > 0 && payload.indexOf('success') > 0){
-            //this.refresh(obj.params);
             wx.showModal({
               title: '提示',
               content: '当前环境PM2.5浓度过高，请注意！',
               success: function (res) {
-                if (res.confirm) {//这里是点击了确定以后
+                if (res.confirm) {
                   console.log('用户点击确定')
-                } else {//这里是点击了取消以后
+                } else {
                   console.log('用户点击取消')
                 }
               }
