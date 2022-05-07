@@ -26,8 +26,9 @@ Page({ // 页面初始化
     PM25: '0',
     CO2: '0',
     Buzzer: '0',
+    BuzzerSwitch: '',
     deviceLog: '',
-    deviceState: '',
+    deviceState: 0,
  },
   // 设备上线 按钮点击事件
   online: function (e) {
@@ -44,7 +45,7 @@ Page({ // 页面初始化
       console.log('connect successfully!');
       let dateTime = util.formatTime(new Date());
       this.setData({
-      deviceState: dateTime + ' Connect!'
+      deviceState: 1
       })
        wx.showToast({
       title: 'Connect!',
@@ -108,16 +109,9 @@ Page({ // 页面初始化
    this.PubData();
  },
 
- closebuzzer:function(){
-let Buzzerst = this.data.Buzzer;
-if(Buzzerst){
-  // 关闭buzzer并发送数据到云端
-}else{
-  
-wx.showToast({
-      title: 'closed already',
-      })
-}
+ closebuzzer(e){
+
+
 
 
 
@@ -130,7 +124,7 @@ wx.showToast({
    let dateTime = util.formatTime(new Date());
    this.setData({
 
-   deviceState: dateTime + ' Disconnect!'
+   deviceState: 0
    })
     wx.showToast({
    title: 'Disconnect!',
@@ -141,8 +135,13 @@ wx.showToast({
 // publish method:post
   PubData(){ 
   const topic=`/sys/${deviceConfig.productKey}/${deviceConfig.deviceName}/thing/event/property/post`;
- 
-  device.publish(topic,this.getPostData(topic));
+  var dataPack;
+    if(this.data.deviceState == 0){
+      dataPack=this.getPostData(topic)
+    }else{
+      dataPack=this.packLoaclData(topic)
+    }
+    device.publish(topic, dataPack);
 },
   PubEvent(identifier){
     const topic=`/sys/${deviceConfig.productKey}/${deviceConfig.deviceName}/thing/event/${identifier}/post`;
@@ -166,12 +165,11 @@ wx.showToast({
 
   console.log("===postData\n topic=" + topic);
   console.log(payloadJson);
-  this.refresh(payloadJson.params);
   return JSON.stringify(payloadJson);
   },
-  // 生成上传的设备属性
+  // 生成上传的设备属性(随机)
   getPostData(topic){
-    const payloadJson = {
+    let payloadJson = {
       method: topic,
       id: Date.now(),
       params: {
@@ -182,6 +180,26 @@ wx.showToast({
         Buzzer: 0, // 
         mlux: Math.round(Math.random()*(15000-1000)+1000), // 1000 ~ 15000
         PM25: Math.round(Math.random()*(70-20)+20) //20 ~ 70 >80报警
+      }
+  }
+
+  console.log("===postData\n topic=" + topic)
+  console.log(payloadJson)
+  this.refresh(payloadJson.params);
+  return JSON.stringify(payloadJson);
+  },
+  // 获得当前页面数据
+  packLoaclData(topic){
+    const payloadJson = {
+      method: topic,
+      id: Date.now(),
+      params: {
+        CurrentTemperature:this.data.Temperature, 
+        CurrentHumidity: this.data.Humidity, 
+        CO2:this.data.CO2 , 
+        Buzzer: this.data.Buzzer, 
+        mlux: this.data.Env_lux,
+        PM25: this.data.PM25 
       }
   }
   console.log("===postData\n topic=" + topic)
