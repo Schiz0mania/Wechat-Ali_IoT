@@ -1,6 +1,11 @@
 // index.js
 
-
+//TODO
+/**
+ * 添加co2报警
+ * 添加蜂鸣器关闭按钮
+ * 连接界面？
+ */
 // 一些常量与数据
 const app = getApp()	
 const iot = require('../../utils/alibabacloud-iot-device-sdk.min.js');
@@ -45,14 +50,12 @@ Page({ // 页面初始化
       title: 'Connect!',
       })
     });
-
-
        //消息监听
     device.on('message', (topic, payload) => {
         var obj= JSON.parse(payload);
         console.log('==received:\n',topic, payload.toString());
      /*
-      下行格式
+      下行格式例子
      {"method":"thing.service.property.set",
      "id":"228046399",
      "params":{
@@ -84,12 +87,40 @@ Page({ // 页面初始化
             })
   
         }
+        if(payload.indexOf('CO2') > 0 && payload.indexOf('success') > 0){
+          wx.showModal({
+            title: '提示',
+            content: '当前环境CO2浓度过高，请注意！',
+            success: function (res) {
+              if (res.confirm) {
+                console.log('用户点击确定')
+              } else {
+                console.log('用户点击取消')
+              }
+            }
+          })
+      }
     });   
   
  },
  //发送数据给云端
  send:function(){
    this.PubData();
+ },
+
+ closebuzzer:function(){
+let Buzzerst = this.data.Buzzer;
+if(Buzzerst){
+  // 关闭buzzer并发送数据到云端
+}else{
+  
+wx.showToast({
+      title: 'closed already',
+      })
+}
+
+
+
  },
  // 设备下线 按钮点击事件
  offline: function () {
@@ -108,25 +139,31 @@ Page({ // 页面初始化
 },
 
 // publish method:post
-  PubData(){
-  const topic=`/sys/a1wTI7EqUpu/${deviceConfig.deviceName}/thing/event/property/post`;
-  device.publish(topic, this.getPostData(topic));
+  PubData(){ 
+  const topic=`/sys/${deviceConfig.productKey}/${deviceConfig.deviceName}/thing/event/property/post`;
+ 
+  device.publish(topic,this.getPostData(topic));
 },
-  PubEvent(){
-    const topic=`/sys/a1wTI7EqUpu/${deviceConfig.deviceName}/thing/event/PM25_alarm/post`;
+  PubEvent(identifier){
+    const topic=`/sys/${deviceConfig.productKey}/${deviceConfig.deviceName}/thing/event/${identifier}/post`;
     device.publish(topic, this.getPostEventData(topic));
   },
 
 // 生成上传的事件参数
   getPostEventData(topic){
-    const payloadJson = {
+    let payloadJson = {
       method: topic,
       id: Date.now(),
       params: {
-        Buzzer: 1,
-        PM25: this.data.PM25
+        Buzzer: 1
       }
   }
+  if(topic.indexOf('PM25')>0){
+    payloadJson.params.PM25=this.data.PM25;
+  }else if(topic.indexOf('CO2')>0){
+    payloadJson.params.CO2=this.data.CO2;
+  }
+
   console.log("===postData\n topic=" + topic);
   console.log(payloadJson);
   this.refresh(payloadJson.params);
@@ -138,13 +175,13 @@ Page({ // 页面初始化
       method: topic,
       id: Date.now(),
       params: {
-        // Math.round(Math.random()*(y-x)+x)
-        CurrentTemperature: Math.floor(Math.random() * (40-10) + 10), // -40 ~ 123
-        CurrentHumidity: Math.floor((Math.random() * (80-20)) + 20), // 0 ~ 100
-        CO2:Math.floor(Math.random()*(6000)+0) , // 0 ~ 6000 ppm
+        // Math.round(Math.random()*(y-x)+x)  --  露天场景
+        CurrentTemperature: Math.floor(Math.random() * (35-10) + 10), // 10 ~ 35
+        CurrentHumidity: Math.floor((Math.random() * (60-30)) + 30), // 30 ~ 60
+        CO2:Math.floor(Math.random()*(1000-250)+250) , // 250 ~ 1000 ppm  >1250警报
         Buzzer: 0, // 
-        mlux: Math.round(Math.random()*(30000-500)+500), // 0 ~ 0 ~ 65000
-        PM25: Math.round(Math.random()*(100-80)+20) //0 ~ 400
+        mlux: Math.round(Math.random()*(15000-1000)+1000), // 1000 ~ 15000
+        PM25: Math.round(Math.random()*(70-20)+20) //20 ~ 70 >80报警
       }
   }
   console.log("===postData\n topic=" + topic)
@@ -190,8 +227,13 @@ Page({ // 页面初始化
   check(params){
     var str=JSON.stringify(params)
     if(str.indexOf('PM25') > 0 ){
-      if(params.PM25>200){
-        this.PubEvent();
+      if(params.PM25>80){
+        this.PubEvent('PM25_alarm');
+      }
+    }
+    if(str.indexOf('CO2') > 0 ){
+      if(params.CO2>1250){
+        this.PubEvent('CO2_alarm');
       }
     }
 

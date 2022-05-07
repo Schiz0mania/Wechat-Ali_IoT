@@ -21,7 +21,9 @@
    <view  class="button-container" bindtap='send' >
     发个消息
    </view>
-
+   <view  class="button-container" bindtap='closebuzzer' >
+    关闭蜂鸣器
+   </view>
    <view  class="button-container" bindtap='offline' >
     设备下线
    </view>
