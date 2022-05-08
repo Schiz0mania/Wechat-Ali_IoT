@@ -11,7 +11,7 @@
      <text>\r\n</text>
      <text>CO2浓度：</text><text>{{CO2}}</text><text>PPM</text>
      <text>\r\n</text>
-     <text>蜂鸣器：<text>{{Buzzer}}</text></text><switch checked="{{BuzzerSwitch}}" bindchange="closebuzzer"/>
+     <text>蜂鸣器：<text>{{Buzzer}}</text></text>
      
 
 

@@ -108,14 +108,6 @@ Page({ // 页面初始化
  send:function(){
    this.PubData();
  },
-
- closebuzzer(e){
-
-
-
-
-
- },
  // 设备下线 按钮点击事件
  offline: function () {
    // 记得清除数据显示
