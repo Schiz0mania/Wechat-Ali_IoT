@@ -1,11 +1,6 @@
 // index.js
 
-//TODO
-/**
- * 添加co2报警
- * 添加蜂鸣器关闭按钮
- * 连接界面？
- */
+
 // 一些常量与数据
 const app = getApp()	
 const iot = require('../../utils/alibabacloud-iot-device-sdk.min.js');
@@ -25,7 +20,7 @@ Page({ // 页面初始化
     Env_lux: '0',
     PM25: '0',
     CO2: '0',
-    Buzzer: '0',
+    Buzzer: 0,
     BuzzerSwitch: '',
     deviceLog: '',
     deviceState: 0,
@@ -74,7 +69,9 @@ Page({ // 页面初始化
           this.check(obj.params);
         }
     // 云端报警事件处理
-        if(payload.indexOf('PM25_alarm') > 0 && payload.indexOf('success') > 0){
+        if(payload.indexOf('success') > 0){
+          if(payload.indexOf('PM25_alarm') > 0){
+            this.BuzzerOn();
             wx.showModal({
               title: '提示',
               content: '当前环境PM2.5浓度过高，请注意！',
@@ -86,10 +83,10 @@ Page({ // 页面初始化
                 }
               }
             })
-  
-        }
-        if(payload.indexOf('CO2') > 0 && payload.indexOf('success') > 0){
-          wx.showModal({
+          }
+          if(payload.indexOf('CO2') > 0){
+            this.BuzzerOn();
+            wx.showModal({
             title: '提示',
             content: '当前环境CO2浓度过高，请注意！',
             success: function (res) {
@@ -100,7 +97,9 @@ Page({ // 页面初始化
               }
             }
           })
-      }
+          }
+        }
+        
     });   
   
  },
@@ -154,7 +153,6 @@ Page({ // 页面初始化
   }else if(topic.indexOf('CO2')>0){
     payloadJson.params.CO2=this.data.CO2;
   }
-
   console.log("===postData\n topic=" + topic);
   console.log(payloadJson);
   return JSON.stringify(payloadJson);
@@ -174,7 +172,6 @@ Page({ // 页面初始化
         PM25: Math.round(Math.random()*(70-20)+20) //20 ~ 70 >80报警
       }
   }
-
   console.log("===postData\n topic=" + topic)
   console.log(payloadJson)
   this.refresh(payloadJson.params);
@@ -248,5 +245,11 @@ Page({ // 页面初始化
     }
 
 
+  },
+  BuzzerOn(){
+    // 处理蜂鸣器开启，等待后续前端再优化
+    this.setData({
+      Buzzer:  1
+    })
   }
 })
