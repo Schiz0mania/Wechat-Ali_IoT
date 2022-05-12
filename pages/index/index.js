@@ -1,11 +1,5 @@
 // index.js
 
-//TODO
-/**
- * 添加co2报警
- * 添加蜂鸣器关闭按钮
- * 连接界面？
- */
 // 一些常量与数据
 const app = getApp()	
 const iot = require('../../utils/alibabacloud-iot-device-sdk.min.js');
@@ -160,6 +154,7 @@ Page({ // 页面初始化
       dataPack=this.getPostData(topic)
     }else{
        //提交数据后
+       console.log('传送本地数据\n',topic);
       dataPack=this.packLoaclData(topic)
     }
     device.publish(topic, dataPack);
@@ -184,7 +179,6 @@ Page({ // 页面初始化
   }else if(topic.indexOf('CO2')>0){
     payloadJson.params.CO2=this.data.CO2;
   }
-
   console.log("===postData\n topic=" + topic);
   console.log(payloadJson);
   return JSON.stringify(payloadJson);
@@ -216,12 +210,12 @@ Page({ // 页面初始化
       method: topic,
       id: Date.now(),
       params: {
-        CurrentTemperature:this.data.Temperature, 
-        CurrentHumidity: this.data.Humidity, 
-        CO2:this.data.CO2 , 
-        Buzzer: this.data.Buzzer, 
-        mlux: this.data.Env_lux,
-        PM25: this.data.PM25 
+        CurrentTemperature:Math.floor(this.data.Temperature), 
+        CurrentHumidity: Math.floor(this.data.Humidity), 
+        CO2:Math.floor(this.data.CO2) , 
+        Buzzer: Math.floor(this.data.Buzzer), 
+        mlux: Math.floor(this.data.Env_lux),
+        PM25: Math.floor(this.data.PM25) 
       }
   }
   console.log("===postData\n topic=" + topic)
@@ -282,13 +276,14 @@ Page({ // 页面初始化
 //wxmld表单数据
   Report:function(e)
   {
-      this.data.Humidity = e.detail.value.humidity;
-      this.data.Temperature = e.detail.value.temperature;
-      this.data.Env_lux = e.detail.value.env_lux;
-      this.data.PM25 = e.detail.value.pm25;
-      this.data.CO2 = e.detail.value.co2;
-      this.data.Buzzer  = e.detail.value.buzzer;
-
+    this.setData({
+      Humidity: e.detail.value.humidity,
+      Temperature: e.detail.value.temperature,
+      Env_lux: e.detail.value.env_lux,
+      PM25: e.detail.value.pm25,
+      CO2: e.detail.value.co2,
+      Buzzer: e.detail.value.buzzer
+  })
   }
 
 })
