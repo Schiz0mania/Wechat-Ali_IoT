@@ -16,6 +16,9 @@
       <text class="cuIcon-title text-orange "></text> 
       <text class="text-orange" style="font-weight: 900;font-family:'Courier New', Courier, monospace;">设备信息</text>
     </view>
+    <view class="action">
+      <image src="{{deviceState==1 ?'/images/tabbar/plugin_cur.png':'/images/tabbar/plugin.png'}}"  class='png'  style='height:50rpx; width: 50rpx; margin-right: 30rpx;'></image>
+    </view>
   </view>
 
    <view class="cu-list menu text-light card-menu ">
@@ -68,6 +71,7 @@
       <text class="cuIcon-title text-orange "></text> 
       <text class="text-orange" style="font-weight: 900;font-family:'Courier New', Courier, monospace;">数据上报</text>
     </view>
+    
   </view>
 <form bindsubmit='Report'>
    <view class="cu-list menu text-light  card-menu ">
@@ -76,7 +80,7 @@
         <text class="cuIcon-circlefill text-grey"></text>
         <text class="text-grey" >湿度: </text>
       </view>
-      <input type='number' placeholder="%" style='padding-right: 2.5cm;' name='humidity'  value="{{Copy=='1'?Humidity:''}}"></input>
+      <input class="text-grey" type='number' placeholder="%" name='humidity'  value="{{Copy=='1'?Humidity:''}}" style="margin-right: 200rpx;"></input>
     </view>
     <view class="cu-item ">
       <view class="content">
@@ -84,7 +88,7 @@
         <text class="text-grey" >温度:</text>
         
       </view>
-      <input type='number' placeholder="℃" style='padding-right: 2.5cm;' name='temperature' value="{{Copy=='1'?Temperature:''}}"></input>
+      <input class="text-grey" type='number' placeholder="℃" name='temperature' value="{{Copy=='1'?Temperature:''}}" style="margin-right: 200rpx;"></input>
     </view>
     <view class="cu-item ">
       <view class="content">
@@ -92,14 +96,14 @@
         <text class="text-grey" >光照强度:</text>
        
       </view>
-      <input type='number' placeholder="Lux" style='padding-right: 2.5cm;' name='env_lux' value="{{Copy=='1'?Env_lux:''}}"></input>
+      <input class="text-grey" type='number' placeholder="Lux" name='env_lux' value="{{Copy=='1'?Env_lux:''}}" style="margin-right: 130rpx;"></input>
     </view>
     <view class="cu-item ">
       <view class="content">
         <text class="cuIcon-circlefill text-grey"></text>
         <text class="text-grey" >PM2.5浓度:</text>
     </view>
-    <input type='number' placeholder="ug/m3" style='padding-right: 2cm;' name='pm25' value="{{Copy=='1'?PM25:''}}"></input>
+    <input class="text-grey" type='number' placeholder="ug/m3"  name='pm25' value="{{Copy=='1'?PM25:''}}"style="margin-right: 110rpx;"></input>
     </view>
     <view class="cu-item ">
       <view class="content">
@@ -107,7 +111,7 @@
         <text class="text-grey" >CO2浓度:</text>
 
       </view>
-      <input type='number' placeholder="PPM" style='padding-right: 2cm;' name='co2' value="{{Copy=='1'?CO2:''}}"></input>
+      <input class="text-grey" type='number' placeholder="PPM" name='co2' value="{{Copy=='1'?CO2:''}}" style="margin-right: 130rpx;"></input>
     </view>
 
     <view class="cu-item ">
@@ -116,7 +120,7 @@
         <text class="text-grey" >蜂鸣器:</text>
         
       </view>
-      <input type='number' placeholder="0/1" style='padding-right: 2.5cm;'name='buzzer' value="{{Copy=='1'?Buzzer:''}}"></input>
+      <input class="text-grey" type='number' placeholder="0/1" name='buzzer' value="{{Copy=='1'?Buzzer:''}}" style="margin-right: 150rpx;"></input>
     </view>
 
     <view class="margin-tb-sm ">
