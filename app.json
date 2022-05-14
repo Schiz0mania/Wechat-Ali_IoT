@@ -5,7 +5,7 @@
     "window": {
         "backgroundTextStyle": "light",
         "navigationBarBackgroundColor": "#fff",
-        "navigationBarTitleText": "My_Sensor",
+        "navigationBarTitleText": "智能家居",
         "navigationBarTextStyle": "black"
     },
     "style": "v2",
