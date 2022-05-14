@@ -90,7 +90,7 @@ Page({ // 页面初始化
     // 云端报警事件处理
         if(payload.indexOf('success') > 0){
           if(payload.indexOf('PM25_alarm') > 0){
-            this.BuzzerOn();
+            //this.BuzzerOn();
             wx.showModal({
               title: '提示',
               content: '当前环境PM2.5浓度过高，请注意！',
@@ -104,7 +104,7 @@ Page({ // 页面初始化
             })
           }
           if(payload.indexOf('CO2') > 0){
-            this.BuzzerOn();
+            //this.BuzzerOn();
             wx.showModal({
             title: '提示',
             content: '当前环境CO2浓度过高，请注意！',
