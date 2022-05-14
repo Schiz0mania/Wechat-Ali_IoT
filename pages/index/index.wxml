@@ -57,7 +57,7 @@
     <view class="cu-item ">
       <view class="content">
         <text class="cuIcon-{{Buzzer=='1'?'noticefill':'notice_forbid_fill'}} text-grey"></text>
-        <text class="text-grey" >蜂鸣器：{{Buzzer=='1'?'开':'关'}}</text>
+        <text class="text-grey" >蜂鸣器：{{Buzzer== 1 ?'开':'关'}}</text>
       </view>
       
     </view>
@@ -126,7 +126,7 @@
     <view class='btn-list'>
     <button class=" cu-btn round bg-orange lg shadow" form-type="submit" style="width: 30%;">提交</button>
     <button class="  cu-btn round bg-orange lg shadow" form-type="reset" style="width: 30%;">重置</button>
-    <button class="  cu-btn round bg-orange lg shadow" form-type="submit" style="width: 30%;" bindtap="copy" >复制</button>
+    <button class="  cu-btn round bg-orange lg shadow"  form-type="reset" style="width: 30%;" bindtap="copy" >复制</button>
   </view>
   <view class="margin-tb-sm ">
    

@@ -1,11 +1,5 @@
 // index.js
 
-//TODO
-/**
- * 添加co2报警
- * 添加蜂鸣器关闭按钮
- * 连接界面？
- */
 // 一些常量与数据
 const app = getApp()	
 const iot = require('../../utils/alibabacloud-iot-device-sdk.min.js');
@@ -90,7 +84,7 @@ Page({ // 页面初始化
        "version":"1.0.0"}
       */
      // 云端set事件并处理数据更新
-        if(payload.indexOf('set') > 0 ){
+        if(payload.indexOf('set') > 0  ){
           this.refresh(obj.params);
           this.check(obj.params);
         }
@@ -161,6 +155,7 @@ Page({ // 页面初始化
       dataPack=this.getPostData(topic)
     }else{
        //提交数据后
+       console.log('传送本地数据\n',topic);
       dataPack=this.packLoaclData(topic)
     }
     device.publish(topic, dataPack);
@@ -177,7 +172,7 @@ Page({ // 页面初始化
       method: topic,
       id: Date.now(),
       params: {
-        Buzzer: 1
+        Buzzer: Math.floor(1)
       }
   }
   if(topic.indexOf('PM25')>0){
@@ -185,9 +180,9 @@ Page({ // 页面初始化
   }else if(topic.indexOf('CO2')>0){
     payloadJson.params.CO2=this.data.CO2;
   }
-
   console.log("===postData\n topic=" + topic);
   console.log(payloadJson);
+  this.refresh(payloadJson.params);
   return JSON.stringify(payloadJson);
   },
   // 生成上传的设备属性(随机)
@@ -200,7 +195,7 @@ Page({ // 页面初始化
         CurrentTemperature: Math.floor(Math.random() * (35-10) + 10), // 10 ~ 35
         CurrentHumidity: Math.floor((Math.random() * (60-30)) + 30), // 30 ~ 60
         CO2:Math.floor(Math.random()*(1000-250)+250) , // 250 ~ 1000 ppm  >1250警报
-        Buzzer: 0, // 
+        Buzzer: Math.floor(0), // 
         mlux: Math.round(Math.random()*(15000-1000)+1000), // 1000 ~ 15000
         PM25: Math.round(Math.random()*(70-20)+20) //20 ~ 70 >80报警
       }
@@ -217,12 +212,12 @@ Page({ // 页面初始化
       method: topic,
       id: Date.now(),
       params: {
-        CurrentTemperature:this.data.Temperature, 
-        CurrentHumidity: this.data.Humidity, 
-        CO2:this.data.CO2 , 
-        Buzzer: this.data.Buzzer, 
-        mlux: this.data.Env_lux,
-        PM25: this.data.PM25 
+        CurrentTemperature:Math.floor(this.data.Temperature), 
+        CurrentHumidity: Math.floor(this.data.Humidity), 
+        CO2:Math.floor(this.data.CO2) , 
+        Buzzer: Math.floor(this.data.Buzzer), 
+        mlux: Math.floor(this.data.Env_lux),
+        PM25: Math.floor(this.data.PM25) 
       }
   }
   console.log("===postData\n topic=" + topic)
@@ -238,21 +233,33 @@ Page({ // 页面初始化
     // 判断数据包内容
     if(str.indexOf('CurrentHumidity') > 0 ){
        CurrentHumidity=params.CurrentHumidity;
+    }else{
+      CurrentHumidity=this.data.Humidity;
     }
     if(str.indexOf('CurrentTemperature') > 0 ){
        CurrentTemperature=params.CurrentTemperature;
+    }else{
+      CurrentTemperature=this.data.Temperature;
     }
     if(str.indexOf('mlux') > 0 ){
        mlux=params.mlux;
+    }else{
+      mlux=this.data.Env_lux;
     }
     if(str.indexOf('PM25') > 0 ){
        PM25=params.PM25;
+    }else{
+      PM25=this.data.PM25;
     }
     if(str.indexOf('CO2') > 0 ){
        CO2=params.CO2;
+    }else{
+      CO2=this.data.CO2;
     }
     if(str.indexOf('Buzzer') > 0 ){
        Buzzer=params.Buzzer;
+    }else{
+      Buzzer=this.data.Buzzer;
     }
     // 根据数据包内容修改页面
     this.setData({
@@ -283,22 +290,20 @@ Page({ // 页面初始化
 //wxmld表单数据
   Report:function(e)
   {
-      this.data.Humidity = e.detail.value.humidity;
-      this.data.Temperature = e.detail.value.temperature;
-      this.data.Env_lux = e.detail.value.env_lux;
-      this.data.PM25 = e.detail.value.pm25;
-      this.data.CO2 = e.detail.value.co2;
-      this.data.Buzzer  = e.detail.value.buzzer;
-     /**  this.setData({
-        Humidity : e.detail.value.humidity,
-      })**/
-
+    this.setData({
+      Humidity: e.detail.value.humidity,
+      Temperature: e.detail.value.temperature,
+      Env_lux: e.detail.value.env_lux,
+      PM25: e.detail.value.pm25,
+      CO2: e.detail.value.co2,
+      Buzzer: e.detail.value.buzzer
+  })
   },
+  
   copy()
   {
     this.setData({
       Copy :'1'
     })
-  }
-
+  },
 })
