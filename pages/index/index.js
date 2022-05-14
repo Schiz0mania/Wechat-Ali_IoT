@@ -20,7 +20,6 @@ Page({ // 页面初始化
     PM25: '0',
     CO2: '0',
     Buzzer: 0,
-    BuzzerSwitch: '',
     deviceLog: '',
     deviceState: 0,
     Copy : '0',
@@ -83,8 +82,8 @@ Page({ // 页面初始化
        "Buzzer":1},
        "version":"1.0.0"}
       */
-     // 云端set事件并处理数据更新
-        if(payload.indexOf('set') > 0  ){
+     // 云端set与post事件并处理数据更新
+        if(payload.indexOf('set') > 0 ||  payload.indexOf('property/post') > 0 ){
           this.refresh(obj.params);
           this.check(obj.params);
         }
@@ -141,7 +140,6 @@ Page({ // 页面初始化
     CO2: '0',
     Buzzer: '0',
     Copy:'0',
-    BuzzerSwitch: '',
     deviceLog: '',
     deviceState: 0,
    deviceState: 0
