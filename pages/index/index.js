@@ -19,8 +19,7 @@ Page({ // 页面初始化
     Env_lux: '0',
     PM25: '0',
     CO2: '0',
-    Buzzer: '0',
-    BuzzerSwitch: '',
+    Buzzer: 0,
     deviceLog: '',
     deviceState: 0,
     Copy : '0',
@@ -57,7 +56,7 @@ Page({ // 页面初始化
     device.on('connect', () => {
        //订阅获取云端数据的topic  
       device.subscribe(`/sys/${deviceConfig.productKey}/${deviceConfig.deviceName}/thing/service/property/set`);
-      console.log('connect successfully!');
+      console.log('Connected');
       let dateTime = util.formatTime(new Date());
       this.setData({
       deviceState: 1
@@ -83,13 +82,15 @@ Page({ // 页面初始化
        "Buzzer":1},
        "version":"1.0.0"}
       */
-     // 云端set事件并处理数据更新
-        if(payload.indexOf('set') > 0  ){
+     // 云端set与post事件并处理数据更新
+        if(payload.indexOf('set') > 0 ||  payload.indexOf('property/post') > 0 ){
           this.refresh(obj.params);
           this.check(obj.params);
         }
     // 云端报警事件处理
-        if(payload.indexOf('PM25_alarm') > 0 && payload.indexOf('success') > 0){
+        if(payload.indexOf('success') > 0){
+          if(payload.indexOf('PM25_alarm') > 0){
+            //this.BuzzerOn();
             wx.showModal({
               title: '提示',
               content: '当前环境PM2.5浓度过高，请注意！',
@@ -101,10 +102,10 @@ Page({ // 页面初始化
                 }
               }
             })
-  
-        }
-        if(payload.indexOf('CO2') > 0 && payload.indexOf('success') > 0){
-          wx.showModal({
+          }
+          if(payload.indexOf('CO2') > 0){
+            //this.BuzzerOn();
+            wx.showModal({
             title: '提示',
             content: '当前环境CO2浓度过高，请注意！',
             success: function (res) {
@@ -115,13 +116,18 @@ Page({ // 页面初始化
               }
             }
           })
-      }
+          }
+        }
+        
     });   
   
  },
  //发送数据给云端
  send:function(){
    this.PubData();
+   wx.showToast({
+    title: 'Send!',
+    })
  },
  // 设备下线 按钮点击事件
  offline: function () {
@@ -137,7 +143,6 @@ Page({ // 页面初始化
     CO2: '0',
     Buzzer: '0',
     Copy:'0',
-    BuzzerSwitch: '',
     deviceLog: '',
     deviceState: 0,
    deviceState: 0
@@ -201,7 +206,6 @@ Page({ // 页面初始化
         PM25: Math.round(Math.random()*(70-20)+20) //20 ~ 70 >80报警
       }
   }
-
   console.log("===postData\n topic=" + topic)
   console.log(payloadJson)
   this.refresh(payloadJson.params);
@@ -308,3 +312,4 @@ Page({ // 页面初始化
     })
   },
 })
+
