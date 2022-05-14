@@ -1,6 +1,5 @@
 // index.js
 
-
 // 一些常量与数据
 const app = getApp()	
 const iot = require('../../utils/alibabacloud-iot-device-sdk.min.js');
@@ -24,10 +23,30 @@ Page({ // 页面初始化
     BuzzerSwitch: '',
     deviceLog: '',
     deviceState: 0,
+    elements: [{
+      title: '设备上线',
+      name: 'online',
+      color: 'orange',
+      icon: 'upload'
+    },
+    {
+      title: '设备下线',
+      name: 'offline',
+      color: 'orange',
+      icon: 'down'
+    },
+    {
+      title: '数据更新',
+      name: 'send',
+      color: 'orange',
+      icon: 'new'
+    },
+    
+  ],
  },
   // 设备上线 按钮点击事件
   online: function (e) {
-    this.doConnect()
+    this.doConnect();
     this.PubData();
  },
  // 上线并更新数据
@@ -64,7 +83,7 @@ Page({ // 页面初始化
        "version":"1.0.0"}
       */
      // 云端set事件并处理数据更新
-        if(payload.indexOf('set') > 0 ){
+        if(payload.indexOf('set') > 0  ){
           this.refresh(obj.params);
           this.check(obj.params);
         }
@@ -109,12 +128,20 @@ Page({ // 页面初始化
  },
  // 设备下线 按钮点击事件
  offline: function () {
-   // 记得清除数据显示
+   // 清除数据显示
   device.end()
    console.log('disconnect successfully!');
    let dateTime = util.formatTime(new Date());
    this.setData({
-
+    Temperature: '0',
+    Humidity: '0',
+    Env_lux: '0',
+    PM25: '0',
+    CO2: '0',
+    Buzzer: '0',
+    BuzzerSwitch: '',
+    deviceLog: '',
+    deviceState: 0,
    deviceState: 0
    })
     wx.showToast({
@@ -130,9 +157,12 @@ Page({ // 页面初始化
     if(this.data.deviceState == 0){
       dataPack=this.getPostData(topic)
     }else{
+       //提交数据后
+       console.log('传送本地数据\n',topic);
       dataPack=this.packLoaclData(topic)
     }
     device.publish(topic, dataPack);
+    console.log('punlish\n',topic);
 },
   PubEvent(identifier){
     const topic=`/sys/${deviceConfig.productKey}/${deviceConfig.deviceName}/thing/event/${identifier}/post`;
@@ -145,7 +175,7 @@ Page({ // 页面初始化
       method: topic,
       id: Date.now(),
       params: {
-        Buzzer: 1
+        Buzzer: Math.floor(1)
       }
   }
   if(topic.indexOf('PM25')>0){
@@ -155,6 +185,7 @@ Page({ // 页面初始化
   }
   console.log("===postData\n topic=" + topic);
   console.log(payloadJson);
+  this.refresh(payloadJson.params);
   return JSON.stringify(payloadJson);
   },
   // 生成上传的设备属性(随机)
@@ -167,7 +198,7 @@ Page({ // 页面初始化
         CurrentTemperature: Math.floor(Math.random() * (35-10) + 10), // 10 ~ 35
         CurrentHumidity: Math.floor((Math.random() * (60-30)) + 30), // 30 ~ 60
         CO2:Math.floor(Math.random()*(1000-250)+250) , // 250 ~ 1000 ppm  >1250警报
-        Buzzer: 0, // 
+        Buzzer: Math.floor(0), // 
         mlux: Math.round(Math.random()*(15000-1000)+1000), // 1000 ~ 15000
         PM25: Math.round(Math.random()*(70-20)+20) //20 ~ 70 >80报警
       }
@@ -183,12 +214,12 @@ Page({ // 页面初始化
       method: topic,
       id: Date.now(),
       params: {
-        CurrentTemperature:this.data.Temperature, 
-        CurrentHumidity: this.data.Humidity, 
-        CO2:this.data.CO2 , 
-        Buzzer: this.data.Buzzer, 
-        mlux: this.data.Env_lux,
-        PM25: this.data.PM25 
+        CurrentTemperature:Math.floor(this.data.Temperature), 
+        CurrentHumidity: Math.floor(this.data.Humidity), 
+        CO2:Math.floor(this.data.CO2) , 
+        Buzzer: Math.floor(this.data.Buzzer), 
+        mlux: Math.floor(this.data.Env_lux),
+        PM25: Math.floor(this.data.PM25) 
       }
   }
   console.log("===postData\n topic=" + topic)
@@ -204,21 +235,33 @@ Page({ // 页面初始化
     // 判断数据包内容
     if(str.indexOf('CurrentHumidity') > 0 ){
        CurrentHumidity=params.CurrentHumidity;
+    }else{
+      CurrentHumidity=this.data.Humidity;
     }
     if(str.indexOf('CurrentTemperature') > 0 ){
        CurrentTemperature=params.CurrentTemperature;
+    }else{
+      CurrentTemperature=this.data.Temperature;
     }
     if(str.indexOf('mlux') > 0 ){
        mlux=params.mlux;
+    }else{
+      mlux=this.data.Env_lux;
     }
     if(str.indexOf('PM25') > 0 ){
        PM25=params.PM25;
+    }else{
+      PM25=this.data.PM25;
     }
     if(str.indexOf('CO2') > 0 ){
        CO2=params.CO2;
+    }else{
+      CO2=this.data.CO2;
     }
     if(str.indexOf('Buzzer') > 0 ){
        Buzzer=params.Buzzer;
+    }else{
+      Buzzer=this.data.Buzzer;
     }
     // 根据数据包内容修改页面
     this.setData({
@@ -246,10 +289,17 @@ Page({ // 页面初始化
 
 
   },
-  BuzzerOn(){
-    // 处理蜂鸣器开启，等待后续前端再优化
+//wxmld表单数据
+  Report:function(e)
+  {
     this.setData({
-      Buzzer:  1
-    })
+      Humidity: e.detail.value.humidity,
+      Temperature: e.detail.value.temperature,
+      Env_lux: e.detail.value.env_lux,
+      PM25: e.detail.value.pm25,
+      CO2: e.detail.value.co2,
+      Buzzer: e.detail.value.buzzer
+  })
   }
+
 })

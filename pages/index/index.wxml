@@ -1,30 +1,138 @@
 <!--index.wxml-->
-<view class="container">
-<view>
-     <text>湿度：</text><text>{{Humidity}}</text><text>%</text>
-     <text>\r\n</text>
-     <text>温度：</text><text>{{Temperature}}</text><text>℃</text>
-     <text>\r\n</text>
-     <text>光照强度：</text><text>{{Env_lux}}</text><text>Lux</text>
-     <text>\r\n</text>
-     <text>PM2.5浓度：</text><text>{{PM25}}</text><text>ug/m3 <br/></text>
-     <text>\r\n</text>
-     <text>CO2浓度：</text><text>{{CO2}}</text><text>PPM</text>
-     <text>\r\n</text>
-     <text>蜂鸣器：<text>{{Buzzer}}</text></text>
-     
 
+<view class="bg-yellow light ">
+  
+<scroll-view scroll-y class="scrollPage">
+  <image src='/images/Bg.png' mode='widthFix' class='png' style='width:100%;padding: 0px 0rpx 10px;height:486rpx'></image>
+  <view class='nav-list'>
+    <view class="nav-li bg-{{item.color}}" wx:for="{{elements}}" wx:key bindtap='{{item.name}}'>
+      <view class="nav-title">{{item.title}}</view>
+      <view class="nav-name">{{item.name}}</view>
+      <text class='cuIcon-{{item.icon}}'></text>
+    </view>
+  </view>
+  <view class="cu-bar  solid-bottom  ">
+    <view class="action">
+      <text class="cuIcon-title text-orange "></text> 
+      <text class="text-orange" style="font-weight: 900;font-family:'Courier New', Courier, monospace;">设备信息</text>
+    </view>
+  </view>
 
-</view>
-  <view  class="button-container" bindtap='online' >
-    设备上线
-   </view>
-   <view  class="button-container" bindtap='send' >
-    发个消息
-   </view>
+   <view class="cu-list menu text-light card-menu ">
+    <view class="cu-item ">
+      <view class="content">
+        <text class="cuIcon-circlefill text-grey"></text>
+        <text class="text-grey" >湿度: {{Humidity}}%</text>
+      </view>
+      
+    </view>
+    <view class="cu-item ">
+      <view class="content">
+        <text class="cuIcon-circlefill text-grey"></text>
+        <text class="text-grey" >温度： {{Temperature}}℃</text>
+      </view>
+      
+    </view>
+    <view class="cu-item ">
+      <view class="content">
+        <text class="cuIcon-circlefill text-grey"></text>
+        <text class="text-grey" >光照强度： {{Env_lux}}Lux</text>
+      </view>
+      
+    </view>
+    <view class="cu-item ">
+      <view class="content">
+        <text class="cuIcon-circlefill text-grey"></text>
+        <text class="text-grey" >PM2.5浓度：{{PM25}}ug/m3</text>
+      </view>
+      
+    </view>
+    <view class="cu-item ">
+      <view class="content">
+        <text class="cuIcon-circlefill text-grey"></text>
+        <text class="text-grey" >CO2浓度： {{CO2}}PPM</text>
+      </view>
+      
+    </view>
+    <view class="cu-item ">
+      <view class="content">
+        <text class="cuIcon-{{Buzzer=='1'?'noticefill':'notice_forbid_fill'}} text-grey"></text>
+        <text class="text-grey" >蜂鸣器：{{Buzzer== 1 ?'开':'关'}}</text>
+      </view>
+      
+    </view>
+    </view>
+
+    <view class="cu-bar  solid-bottom  ">
+    <view class="action">
+      <text class="cuIcon-title text-orange "></text> 
+      <text class="text-orange" style="font-weight: 900;font-family:'Courier New', Courier, monospace;">数据上报</text>
+    </view>
+  </view>
+<form bindsubmit='Report'>
+   <view class="cu-list menu text-light  card-menu ">
+    <view class="cu-item ">
+      <view class="content ">
+        <text class="cuIcon-circlefill text-grey"></text>
+        <text class="text-grey" >湿度: </text>
+      </view>
+      <input type='number' placeholder="%" style='padding-right: 2.5cm;' name='humidity'></input>
+    </view>
+    <view class="cu-item ">
+      <view class="content">
+        <text class="cuIcon-circlefill text-grey"></text>
+        <text class="text-grey" >温度:</text>
+        
+      </view>
+      <input type='number' placeholder="℃" style='padding-right: 2.5cm;' name='temperature'></input>
+    </view>
+    <view class="cu-item ">
+      <view class="content">
+        <text class="cuIcon-circlefill text-grey"></text>
+        <text class="text-grey" >光照强度:</text>
+       
+      </view>
+      <input type='number' placeholder="Lux" style='padding-right: 2.5cm;' name='env_lux'></input>
+    </view>
+    <view class="cu-item ">
+      <view class="content">
+        <text class="cuIcon-circlefill text-grey"></text>
+        <text class="text-grey" >PM2.5浓度:</text>
+    </view>
+    <input type='number' placeholder="ug/m3" style='padding-right: 2cm;' name='pm25'></input>
+    </view>
+    <view class="cu-item ">
+      <view class="content">
+        <text class="cuIcon-circlefill text-grey"></text>
+        <text class="text-grey" >CO2浓度:</text>
+        
+      </view>
+      <input type='number' placeholder="PPM" style='padding-right: 2cm;' name='co2'></input>
+    </view>
+
+    <view class="cu-item ">
+      <view class="content">
+        <text class="cuIcon-notice_forbid_fill text-grey"></text>
+        <text class="text-grey" >蜂鸣器:</text>
+        
+      </view>
+      <input type='number' placeholder="0/1" style='padding-right: 2.5cm;'name='buzzer'></input>
+    </view>
+
+    <view class="margin-tb-sm ">
    
-   <view  class="button-container" bindtap='offline' >
-    设备下线
-   </view>
+  </view>
 
-</view>
+    <view class='nav-list'>
+    <button class=" cu-btn round bg-orange lg shadow" form-type="submit">提交</button>
+    <button class=" col-1 cu-btn round bg-orange lg shadow" form-type="reset">重置</button>
+  </view>
+  <view class="margin-tb-sm ">
+   
+  </view>
+
+    </view>
+</form>
+ </scroll-view>
+ </view>
+
