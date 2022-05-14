@@ -76,7 +76,7 @@
         <text class="cuIcon-circlefill text-grey"></text>
         <text class="text-grey" >湿度: </text>
       </view>
-      <input type='number' placeholder="%" style='padding-right: 2.5cm;' name='humidity'></input>
+      <input type='number' placeholder="%" style='padding-right: 2.5cm;' name='humidity'  value="{{Copy=='1'?Humidity:''}}"></input>
     </view>
     <view class="cu-item ">
       <view class="content">
@@ -84,7 +84,7 @@
         <text class="text-grey" >温度:</text>
         
       </view>
-      <input type='number' placeholder="℃" style='padding-right: 2.5cm;' name='temperature'></input>
+      <input type='number' placeholder="℃" style='padding-right: 2.5cm;' name='temperature' value="{{Copy=='1'?Temperature:''}}"></input>
     </view>
     <view class="cu-item ">
       <view class="content">
@@ -92,22 +92,22 @@
         <text class="text-grey" >光照强度:</text>
        
       </view>
-      <input type='number' placeholder="Lux" style='padding-right: 2.5cm;' name='env_lux'></input>
+      <input type='number' placeholder="Lux" style='padding-right: 2.5cm;' name='env_lux' value="{{Copy=='1'?Env_lux:''}}"></input>
     </view>
     <view class="cu-item ">
       <view class="content">
         <text class="cuIcon-circlefill text-grey"></text>
         <text class="text-grey" >PM2.5浓度:</text>
     </view>
-    <input type='number' placeholder="ug/m3" style='padding-right: 2cm;' name='pm25'></input>
+    <input type='number' placeholder="ug/m3" style='padding-right: 2cm;' name='pm25' value="{{Copy=='1'?PM25:''}}"></input>
     </view>
     <view class="cu-item ">
       <view class="content">
         <text class="cuIcon-circlefill text-grey"></text>
         <text class="text-grey" >CO2浓度:</text>
-        
+
       </view>
-      <input type='number' placeholder="PPM" style='padding-right: 2cm;' name='co2'></input>
+      <input type='number' placeholder="PPM" style='padding-right: 2cm;' name='co2' value="{{Copy=='1'?CO2:''}}"></input>
     </view>
 
     <view class="cu-item ">
@@ -116,16 +116,17 @@
         <text class="text-grey" >蜂鸣器:</text>
         
       </view>
-      <input type='number' placeholder="0/1" style='padding-right: 2.5cm;'name='buzzer'></input>
+      <input type='number' placeholder="0/1" style='padding-right: 2.5cm;'name='buzzer' value="{{Copy=='1'?Buzzer:''}}"></input>
     </view>
 
     <view class="margin-tb-sm ">
    
   </view>
 
-    <view class='nav-list'>
-    <button class=" cu-btn round bg-orange lg shadow" form-type="submit">提交</button>
-    <button class=" col-1 cu-btn round bg-orange lg shadow" form-type="reset">重置</button>
+    <view class='btn-list'>
+    <button class=" cu-btn round bg-orange lg shadow" form-type="submit" style="width: 30%;">提交</button>
+    <button class="  cu-btn round bg-orange lg shadow" form-type="reset" style="width: 30%;">重置</button>
+    <button class="  cu-btn round bg-orange lg shadow" form-type="submit" style="width: 30%;" bindtap="copy" >复制</button>
   </view>
   <view class="margin-tb-sm ">
    

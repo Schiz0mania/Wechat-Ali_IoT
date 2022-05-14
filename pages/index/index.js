@@ -29,6 +29,7 @@ Page({ // 页面初始化
     BuzzerSwitch: '',
     deviceLog: '',
     deviceState: 0,
+    Copy : '0',
     elements: [{
       title: '设备上线',
       name: 'online',
@@ -288,7 +289,16 @@ Page({ // 页面初始化
       this.data.PM25 = e.detail.value.pm25;
       this.data.CO2 = e.detail.value.co2;
       this.data.Buzzer  = e.detail.value.buzzer;
+     /**  this.setData({
+        Humidity : e.detail.value.humidity,
+      })**/
 
+  },
+  copy()
+  {
+    this.setData({
+      Copy :'1'
+    })
   }
 
 })
