@@ -57,7 +57,7 @@
     <view class="cu-item ">
       <view class="content">
         <text class="cuIcon-{{Buzzer=='1'?'noticefill':'notice_forbid_fill'}} text-grey"></text>
-        <text class="text-grey" >蜂鸣器：{{Buzzer=='1'?'开':'关'}}</text>
+        <text class="text-grey" >蜂鸣器：{{Buzzer== 1 ?'开':'关'}}</text>
       </view>
       
     </view>
