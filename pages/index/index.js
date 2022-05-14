@@ -12,6 +12,7 @@ const deviceConfig = {
   brokerUrl: 'wxs://a1wTI7EqUpu.iot-as-mqtt.cn-shanghai.aliyuncs.com'
  };
 var device
+var isinit=true
 Page({ // 页面初始化
   data: {
     Temperature: '0',
@@ -48,6 +49,7 @@ Page({ // 页面初始化
   online: function (e) {
     this.doConnect();
     this.PubData();
+    
  },
  // 上线并更新数据
   doConnect() {
@@ -56,13 +58,15 @@ Page({ // 页面初始化
     device.on('connect', () => {
        //订阅获取云端数据的topic  
       device.subscribe(`/sys/${deviceConfig.productKey}/${deviceConfig.deviceName}/thing/service/property/set`);
-      console.log('connect successfully!');
+      console.log('Connected');
+      
       let dateTime = util.formatTime(new Date());
       this.setData({
       deviceState: 1
       })
        wx.showToast({
       title: 'Connect!',
+      icon: 'success',
       })
     });
        //消息监听
@@ -124,12 +128,25 @@ Page({ // 页面初始化
  },
  //发送数据给云端
  send:function(){
-   this.PubData();
+   if(this.data.deviceState == 1){
+    this.PubData();
+    wx.showToast({
+    title: 'Send!',
+    icon: 'success',
+    })
+   }else{
+    wx.showToast({
+      title: 'not Connented',
+      icon: 'error',
+      })
+   }
+   
  },
  // 设备下线 按钮点击事件
  offline: function () {
+   if(this.data.deviceState == 1){
    // 清除数据显示
-  device.end()
+    device.end()
    console.log('disconnect successfully!');
    let dateTime = util.formatTime(new Date());
    this.setData({
@@ -138,15 +155,22 @@ Page({ // 页面初始化
     Env_lux: '0',
     PM25: '0',
     CO2: '0',
-    Buzzer: '0',
+    Buzzer: 0,
     Copy:'0',
     deviceLog: '',
     deviceState: 0,
-   deviceState: 0
    })
+   isinit=true;
     wx.showToast({
    title: 'Disconnect!',
+   icon: 'success',
    })
+  }else{
+    wx.showToast({
+      title: 'not Connented',
+      icon: 'error',
+      })
+  }
 
 },
 
@@ -154,8 +178,9 @@ Page({ // 页面初始化
   PubData(){ 
   const topic=`/sys/${deviceConfig.productKey}/${deviceConfig.deviceName}/thing/event/property/post`;
   var dataPack;
-    if(this.data.deviceState == 0){
+    if(isinit){
       dataPack=this.getPostData(topic)
+      isinit=false;
     }else{
        //提交数据后
        console.log('传送本地数据\n',topic);
@@ -309,3 +334,4 @@ Page({ // 页面初始化
     })
   },
 })
+
