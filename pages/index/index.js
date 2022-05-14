@@ -56,7 +56,7 @@ Page({ // 页面初始化
     device.on('connect', () => {
        //订阅获取云端数据的topic  
       device.subscribe(`/sys/${deviceConfig.productKey}/${deviceConfig.deviceName}/thing/service/property/set`);
-      console.log('connect successfully!');
+      console.log('Connected');
       let dateTime = util.formatTime(new Date());
       this.setData({
       deviceState: 1
@@ -125,6 +125,9 @@ Page({ // 页面初始化
  //发送数据给云端
  send:function(){
    this.PubData();
+   wx.showToast({
+    title: 'Send!',
+    })
  },
  // 设备下线 按钮点击事件
  offline: function () {
