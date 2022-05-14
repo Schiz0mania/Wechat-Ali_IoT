@@ -128,11 +128,10 @@
     <button class="  cu-btn round bg-orange lg shadow" form-type="reset" style="width: 30%;">重置</button>
     <button class="  cu-btn round bg-orange lg shadow"  form-type="reset" style="width: 30%;" bindtap="copy" >复制</button>
   </view>
-  <view class="margin-tb-sm ">
-   
+  <view class="margin-tb-lg ">   
   </view>
 
-    </view>
+ </view>
 </form>
  </scroll-view>
  </view>

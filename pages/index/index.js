@@ -136,6 +136,7 @@ Page({ // 页面初始化
     PM25: '0',
     CO2: '0',
     Buzzer: '0',
+    Copy:'0',
     BuzzerSwitch: '',
     deviceLog: '',
     deviceState: 0,
@@ -299,7 +300,7 @@ Page({ // 页面初始化
       Buzzer: e.detail.value.buzzer
   })
   },
-  
+
   copy()
   {
     this.setData({
