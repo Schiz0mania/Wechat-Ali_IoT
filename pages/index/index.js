@@ -59,7 +59,10 @@ Page({ // 页面初始化
        //订阅获取云端数据的topic  
       device.subscribe(`/sys/${deviceConfig.productKey}/${deviceConfig.deviceName}/thing/service/property/set`);
       console.log('Connected');
+<<<<<<< HEAD
       
+=======
+>>>>>>> 782eb65931584cc1ccfb9a9a10b68e2b9d3a2d8d
       let dateTime = util.formatTime(new Date());
       this.setData({
       deviceState: 1
@@ -128,6 +131,7 @@ Page({ // 页面初始化
  },
  //发送数据给云端
  send:function(){
+<<<<<<< HEAD
    if(this.data.deviceState == 1){
     this.PubData();
     wx.showToast({
@@ -141,6 +145,12 @@ Page({ // 页面初始化
       })
    }
    
+=======
+   this.PubData();
+   wx.showToast({
+    title: 'Send!',
+    })
+>>>>>>> 782eb65931584cc1ccfb9a9a10b68e2b9d3a2d8d
  },
  // 设备下线 按钮点击事件
  offline: function () {
